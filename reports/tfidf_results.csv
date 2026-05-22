@@ -1,0 +1,4 @@
+Model,Weighted F1
+Logistic Regression,0.7991
+Linear SVM,0.7973
+Naive Bayes,0.7521

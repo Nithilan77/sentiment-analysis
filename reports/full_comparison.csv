@@ -1,0 +1,8 @@
+Model,Weighted F1,Approach
+Logistic Regression,0.7991,TF-IDF
+Linear SVM,0.7973,TF-IDF
+Naive Bayes,0.7521,TF-IDF
+Logistic Regression,0.6745,GloVe (avg)
+Linear SVM,0.6664,GloVe (avg)
+Logistic Regression,0.6523,GloVe (weighted)
+Linear SVM,0.643,GloVe (weighted)
