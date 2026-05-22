@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # FastAPI app
 app = FastAPI(
     title       = "Sentiment Analysis API",
-    description = "Analyzes product/service reviews and classifies sentiment as Positive, Neutral, or Negative.",
+    description = "Analyzes product reviews and classifies sentiment as Positive, Neutral, or Negative.",
     version     = "1.0.0"
 )
 
