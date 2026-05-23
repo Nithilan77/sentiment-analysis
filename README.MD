@@ -313,4 +313,4 @@ To reproduce — download dataset and GloVe, run notebooks in order, models will
 
 ## Author
 
-Nithilan — QPay India Pvt Ltd Internship
+Nithilan S
