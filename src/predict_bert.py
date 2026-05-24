@@ -14,7 +14,7 @@ from preprocess import preprocess
 
 # paths
 MODELS_DIR  = Path(__file__).resolve().parent.parent / 'models'
-MODEL_PATH  = MODELS_DIR / 'bert_best_model.pt'
+MODEL_PATH  = MODELS_DIR / 'bert_best_model_raw_data.pt'
 
 # config
 MAX_LEN     = 128

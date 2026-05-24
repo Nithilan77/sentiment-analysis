@@ -10,7 +10,8 @@ export default function Navbar() {
         <div className="flex gap-6">
           {[
             { to: '/',        label: 'Analyze' },
-            { to: '/compare', label: 'Compare' }
+            { to: '/compare', label: 'Compare' },
+            { to: '/batch', label: 'Batch' }
           ].map(link => (
             <NavLink
               key={link.to}
