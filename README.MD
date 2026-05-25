@@ -63,6 +63,7 @@ sentiment-analysis/
 
 | Approach | Model | Weighted F1 |
 |---|---|---|
+| BERT fine-tuned (raw text) | bert-base-uncased | **0.8236** |
 | TF-IDF | Logistic Regression | **0.7991** |
 | TF-IDF | Linear SVM | 0.7973 |
 | TF-IDF | Naive Bayes | 0.7521 |
@@ -259,6 +260,14 @@ Response:
 }
 ```
 
+### Batch File Prediction
+POST /predict/file
+Content-Type: multipart/form-data
+
+Upload a CSV file with a `review` column.
+Returns a CSV with sentiment, confidence and scores for every row.
+Max: 50,000 reviews per file.
+
 ---
 
 ## Running the Frontend
@@ -273,8 +282,9 @@ Open → http://localhost:5173
 
 ### Pages
 
-- **Analyze** — paste any review, select TF-IDF or BERT model, get sentiment + confidence bars
-- **Compare** — run the same review through both models side by side
+- **Analyze** — single review, choose TF-IDF or BERT
+- **Compare** — same review through both models side by side
+- **Batch** — upload CSV, download results with sentiment scores
 
 ---
 
