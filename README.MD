@@ -82,7 +82,15 @@ sentiment-analysis/
 
 **GloVe weighted pooling underperformed simple average pooling** because at 1.8M reviews, IDF scores became too uniform — almost every word appeared enough times to receive a similar weight, adding noise instead of signal.
 
-**BERT scored comparably to TF-IDF (0.7934 vs 0.7991)** despite being trained on only 100k samples vs 1.8M for TF-IDF, and on preprocessed text which removes context BERT relies on. On raw text with full data and more epochs, BERT would clearly outperform. The near-equal F1 with 18x less data demonstrates BERT's fundamental superiority in language understanding.
+**BERT on raw text is the best model overall (F1: 0.8236)** — outperforming TF-IDF despite 
+being trained on only 150k samples vs 1.8M. This demonstrates BERT's fundamental superiority 
+in language understanding. The preprocessed BERT (0.7934) scored below TF-IDF, proving that 
+input quality matters as much as model quality.
+
+**Preprocessing hurts BERT performance** — BERT trained on preprocessed text scored 0.7934 
+while BERT trained on raw text scored 0.8236, a 3-point improvement simply by removing the 
+preprocessing step. BERT is designed to read natural language as-is — removing stopwords 
+and punctuation strips away contextual cues the model relies on.
 
 **Neutral class was the hardest to classify** across all approaches — expected, as neutral language is inherently ambiguous and sits between two opposing sentiment poles.
 
