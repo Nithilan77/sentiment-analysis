@@ -35,6 +35,7 @@ sentiment-analysis/
 │   │   ├── pages/
 │   │   │   ├── Home.jsx                 ← single review analysis
 │   │   │   └── Compare.jsx              ← side by side model comparison
+│   │   │   └── BatchUpload.jsx          ← CSV upload and batch processing
 │   │   └── App.jsx
 │   └── package.json
 ├── models/                              ← saved model files (not tracked)
@@ -100,14 +101,15 @@ sentiment-analysis/
 
 - **Model:** bert-base-uncased (110M parameters)
 - **Environment:** Google Colab T4 GPU (15.6GB)
-- **Training samples:** 100,000 (33,333 per class)
+- **Training samples:** 150,000 (50,000 per class)
+- **Input:** Raw unprocessed text
 - **Split:** 70% train / 15% val / 15% test
 - **Epochs:** 3
 - **Batch size:** 32
 - **Learning rate:** 2e-5
 - **Max token length:** 128
-- **Best val F1:** 0.7917 (epoch 2)
-- **Test F1:** 0.7934
+- **Best val F1:** 0.8206 (epoch 2)
+- **Test F1:** 0.8236
 
 ---
 
@@ -261,9 +263,10 @@ Response:
 ```
 
 ### Batch File Prediction
+```
 POST /predict/file
 Content-Type: multipart/form-data
-
+```
 Upload a CSV file with a `review` column.
 Returns a CSV with sentiment, confidence and scores for every row.
 Max: 50,000 reviews per file.
