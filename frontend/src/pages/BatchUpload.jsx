@@ -8,6 +8,7 @@ export default function BatchUpload() {
   const [error,    setError]    = useState(null)
   const [progress, setProgress] = useState(0)
   const inputRef = useRef()
+  const [model, setModel] = useState('tfidf')
 
   const handleFile = (e) => {
     const f = e.target.files[0]
@@ -33,7 +34,7 @@ export default function BatchUpload() {
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/predict/file',
+        model === 'bert' ? 'http://localhost:8001/predict/file' : 'http://localhost:8000/predict/file',
         formData,
         {
           headers      : { 'Content-Type': 'multipart/form-data' },
@@ -93,6 +94,27 @@ export default function BatchUpload() {
         Upload a CSV file with a <code className="bg-gray-100 px-1 rounded">review</code> column.
         Get back a results CSV with sentiment and confidence for every row.
       </p>
+
+      <div className="flex gap-3 mb-6">
+      {['tfidf', 'bert'].map(m => (
+        <button
+          key={m}
+          onClick={() => setModel(m)}
+          className={`px-4 py-2 rounded-full text-sm font-medium border transition-all
+            ${model === m
+              ? 'bg-gray-800 text-white border-gray-800'
+              : 'bg-white text-gray-600 border-gray-300 hover:border-gray-500'
+            }`}
+        >
+          {m === 'bert' ? 'BERT' : 'TF-IDF'}
+        </button>
+      ))}
+      {model === 'bert' && (
+        <p className="text-xs text-yellow-600 self-center">
+          ⚠️ BERT batch is slower — 10k reviews may take 15-20 mins
+        </p>
+      )}
+      </div>
 
       {/* format note */}
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 text-sm text-blue-700">
