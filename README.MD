@@ -71,7 +71,7 @@ sentiment-analysis/
 | GloVe avg pooling | Linear SVM | 0.6664 |
 | GloVe TF-IDF weighted | Logistic Regression | 0.6523 |
 | GloVe TF-IDF weighted | Linear SVM | 0.6430 |
-| BERT fine-tuned | bert-base-uncased | 0.7934 |
+| BERT fine-tuned (processed text) | bert-base-uncased | 0.7934 |
 
 ---
 
