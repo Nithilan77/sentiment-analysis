@@ -161,18 +161,6 @@ export default function BatchUpload() {
           <p className="text-green-700 font-semibold mb-4">
             ✅ Done — {summary.total} reviews analyzed. Results downloaded.
           </p>
-          <div className="grid grid-cols-3 gap-4 text-center">
-            {[
-              { label: 'Positive', value: summary.posPct, color: 'text-green-700' },
-              { label: 'Neutral',  value: summary.neuPct, color: 'text-yellow-700' },
-              { label: 'Negative', value: summary.negPct, color: 'text-red-700'   },
-            ].map(s => (
-              <div key={s.label} className="bg-white rounded-xl p-4 border border-green-100">
-                <p className={`text-2xl font-bold ${s.color}`}>{s.value}%</p>
-                <p className="text-xs text-gray-500 mt-1">{s.label}</p>
-              </div>
-            ))}
-          </div>
         </div>
       )}
 
