@@ -11,13 +11,16 @@ Endpoints:
 
 from fastapi            import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses  import StreamingResponse
+from pathlib            import Path
+from collections        import Counter
 from pydantic           import BaseModel, Field
 from typing             import List
 import time
 import pandas as pd
 import io
 import logging
+import re
 
 from predict import predict, predict_batch
 
@@ -237,3 +240,28 @@ async def predict_from_file(file: UploadFile = File(...)):
             "X-Negative-Pct"    : str(neg_pct),
         }
     )
+
+@app.get("/keywords", tags=["Analysis"])
+def get_keywords(top_n: int = 20):
+    """
+    Returns top N most common words per sentiment class
+    extracted from the training data.
+    """
+    try:
+        data_path = Path(__file__).resolve().parent.parent / 'data' / 'processed' / 'reviews_clean.csv'
+        df = pd.read_csv(data_path)
+        df = df.dropna(subset=['clean_text'])
+
+        result = {}
+        for sentiment in ['Positive', 'Negative', 'Neutral']:
+            text  = ' '.join(df[df['sentiment'] == sentiment]['clean_text'].sample(
+                min(50000, len(df[df['sentiment'] == sentiment])), random_state=42
+            ).tolist()).lower()
+            words = re.findall(r'\b[a-z]{3,}\b', text)
+            top   = Counter(words).most_common(top_n)
+            result[sentiment] = [{'word': w, 'count': c} for w, c in top]
+
+        return result
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

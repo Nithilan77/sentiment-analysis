@@ -11,7 +11,8 @@ export default function Navbar() {
           {[
             { to: '/',        label: 'Analyze' },
             { to: '/compare', label: 'Compare' },
-            { to: '/batch', label: 'Batch' }
+            { to: '/batch', label: 'Batch' },
+            { to: '/keywords', label: 'Keywords' }
           ].map(link => (
             <NavLink
               key={link.to}
