@@ -26,3 +26,10 @@ export const compareSentiment = async (text) => {
     bert  : bert.data
   }
 }
+
+export const extractAspects = async (text) => {
+  const response = await tfidfClient.get('/aspects', {
+    params: { text }
+  })
+  return response.data
+}
