@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { predictSentiment } from '../api/client'
 import ResultCard from '../components/ResultCard'
+import { predictSentiment, extractAspects } from '../api/client'
 
 export default function Home() {
   const [text,    setText]    = useState('')
@@ -8,21 +9,27 @@ export default function Home() {
   const [result,  setResult]  = useState(null)
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState(null)
+  const [aspects, setAspects] = useState(null)
 
   const handleAnalyze = async () => {
-    if (!text.trim()) return
-    setLoading(true)
-    setError(null)
-    setResult(null)
-    try {
-      const data = await predictSentiment(text, model)
-      setResult(data)
-    } catch (err) {
-      setError('Failed to connect to API. Make sure the server is running.')
-    } finally {
-      setLoading(false)
-    }
+  if (!text.trim()) return
+  setLoading(true)
+  setError(null)
+  setResult(null)
+  setAspects(null)
+  try {
+    const [data, aspectData] = await Promise.all([
+      predictSentiment(text, model),
+      extractAspects(text)
+    ])
+    setResult(data)
+    setAspects(aspectData)
+  } catch (err) {
+    setError('Failed to connect to API. Make sure the server is running.')
+  } finally {
+    setLoading(false)
   }
+}
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
@@ -101,6 +108,33 @@ export default function Home() {
 
       {/* result */}
       {result && <ResultCard result={result} model={model} />}
+      {aspects && aspects.detected && (
+  <div className="mt-4 bg-white border border-gray-200 rounded-2xl p-6">
+    <p className="text-sm font-semibold text-gray-700 mb-4">
+      Aspects Detected
+    </p>
+    <div className="flex flex-col gap-3">
+      {Object.entries(aspects.aspects).map(([aspect, words]) => (
+        <div key={aspect} className="flex items-start gap-3">
+          <span className="text-sm font-medium text-gray-600 w-24 shrink-0">
+            {aspect}
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {words.map(word => (
+              <span
+                key={word}
+                className="text-xs px-2.5 py-1 rounded-full bg-gray-100
+                           text-gray-600 border border-gray-200"
+              >
+                {word}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
 
     </div>
   )
