@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { predictSentiment } from '../api/client'
-import ResultCard from '../components/ResultCard'
 import { predictSentiment, extractAspects } from '../api/client'
+import ResultCard from '../components/ResultCard'
 
 export default function Home() {
   const [text,    setText]    = useState('')
