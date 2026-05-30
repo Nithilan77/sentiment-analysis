@@ -244,22 +244,63 @@ async def predict_from_file(file: UploadFile = File(...)):
 @app.get("/keywords", tags=["Analysis"])
 def get_keywords(top_n: int = 20):
     """
-    Returns top N most common words per sentiment class
-    extracted from the training data.
+    Returns top words per sentiment class grouped by aspect.
     """
     try:
         data_path = Path(__file__).resolve().parent.parent / 'data' / 'processed' / 'reviews_clean.csv'
         df = pd.read_csv(data_path)
         df = df.dropna(subset=['clean_text'])
 
+        # aspect seed words
+        ASPECTS = {
+            'Quality'   : ['quality', 'good', 'great', 'excellent', 'poor', 'best',
+                           'worst', 'amazing', 'terrible', 'outstanding', 'average',
+                           'perfect', 'horrible', 'superb', 'mediocre', 'fantastic'],
+            'Service'   : ['service', 'staff', 'friendly', 'rude', 'helpful', 'slow',
+                           'quick', 'attentive', 'unprofessional', 'polite', 'manager',
+                           'waiter', 'employee', 'server', 'crew', 'team'],
+            'Food'      : ['food', 'taste', 'delicious', 'bland', 'fresh', 'cold',
+                           'hot', 'flavour', 'flavor', 'tasty', 'meal', 'dish',
+                           'menu', 'portion', 'ingredient', 'cooked', 'raw'],
+            'Price'     : ['price', 'expensive', 'cheap', 'worth', 'value', 'cost',
+                           'overpriced', 'affordable', 'reasonable', 'pricey', 'money',
+                           'paid', 'charge', 'bill', 'fee', 'budget'],
+            'Ambience'  : ['ambience', 'atmosphere', 'clean', 'dirty', 'cozy', 'noise',
+                           'noisy', 'quiet', 'comfortable', 'crowded', 'parking',
+                           'location', 'decor', 'environment', 'vibe', 'seating'],
+            'Experience': ['experience', 'visit', 'recommend', 'return', 'back',
+                           'disappointed', 'satisfied', 'happy', 'upset', 'surprised',
+                           'expected', 'impressed', 'enjoyed', 'regret', 'loved']
+        }
+
         result = {}
+
         for sentiment in ['Positive', 'Negative', 'Neutral']:
-            text  = ' '.join(df[df['sentiment'] == sentiment]['clean_text'].sample(
+            subset = df[df['sentiment'] == sentiment]['clean_text'].sample(
                 min(50000, len(df[df['sentiment'] == sentiment])), random_state=42
-            ).tolist()).lower()
+            ).tolist()
+
+            # count all words
+            text  = ' '.join(subset).lower()
             words = re.findall(r'\b[a-z]{3,}\b', text)
-            top   = Counter(words).most_common(top_n)
-            result[sentiment] = [{'word': w, 'count': c} for w, c in top]
+            counts = Counter(words)
+
+            # group by aspect
+            aspect_result = {}
+            for aspect, seeds in ASPECTS.items():
+                aspect_words = []
+                for word in seeds:
+                    if word in counts:
+                        aspect_words.append({
+                            'word' : word,
+                            'count': counts[word]
+                        })
+                # sort by count descending
+                aspect_words = sorted(aspect_words, key=lambda x: x['count'], reverse=True)
+                if aspect_words:
+                    aspect_result[aspect] = aspect_words[:top_n]
+
+            result[sentiment] = aspect_result
 
         return result
 
