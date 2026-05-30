@@ -14,6 +14,7 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+from predict_bert import predict_bert
 from typing import List
 import time
 import pandas as pd
@@ -175,7 +176,7 @@ async def predict_from_file(file: UploadFile = File(...)):
 
     for text in df['review']:
         try:
-            result = predict(str(text))
+            result = predict_bert(str(text))
             sentiments.append(result['sentiment'])
             confidences.append(result['confidence'])
             pos_scores.append(result['scores'].get('Positive', 0))
