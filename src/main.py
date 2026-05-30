@@ -306,3 +306,43 @@ def get_keywords(top_n: int = 20):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/aspects", tags=["Analysis"])
+def extract_aspects(text: str):
+    """
+    Extract aspects and associated words from a single review.
+    """
+    ASPECTS = {
+        'Quality'   : ['quality', 'good', 'great', 'excellent', 'poor', 'best',
+                       'worst', 'amazing', 'terrible', 'outstanding', 'average',
+                       'perfect', 'horrible', 'superb', 'mediocre', 'fantastic'],
+        'Service'   : ['service', 'staff', 'friendly', 'rude', 'helpful', 'slow',
+                       'quick', 'attentive', 'unprofessional', 'polite', 'manager',
+                       'waiter', 'employee', 'server', 'crew', 'team'],
+        'Food'      : ['food', 'taste', 'delicious', 'bland', 'fresh', 'cold',
+                       'hot', 'flavour', 'flavor', 'tasty', 'meal', 'dish',
+                       'menu', 'portion', 'ingredient', 'cooked', 'raw'],
+        'Price'     : ['price', 'expensive', 'cheap', 'worth', 'value', 'cost',
+                       'overpriced', 'affordable', 'reasonable', 'pricey', 'money',
+                       'paid', 'charge', 'bill', 'fee', 'budget'],
+        'Ambience'  : ['ambience', 'atmosphere', 'clean', 'dirty', 'cozy', 'noise',
+                       'noisy', 'quiet', 'comfortable', 'crowded', 'parking',
+                       'location', 'decor', 'environment', 'vibe', 'seating'],
+        'Experience': ['experience', 'visit', 'recommend', 'return', 'back',
+                       'disappointed', 'satisfied', 'happy', 'upset', 'surprised',
+                       'expected', 'impressed', 'enjoyed', 'regret', 'loved']
+    }
+
+    clean     = preprocess(text)
+    tokens    = set(clean.lower().split())
+    detected  = {}
+
+    for aspect, seeds in ASPECTS.items():
+        matched = [w for w in seeds if w in tokens]
+        if matched:
+            detected[aspect] = matched
+
+    return {
+        'aspects' : detected,
+        'detected': len(detected) > 0
+    }
