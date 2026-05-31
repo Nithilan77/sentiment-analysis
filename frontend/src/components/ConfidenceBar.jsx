@@ -15,6 +15,10 @@ export default function ConfidenceBar({ scores }) {
             <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
               <div
                 className="h-full rounded-full transition-all duration-500"
+                style={{
+                  width      : `${score}%`,
+                  background : COLORS[label]
+                }}
               />
             </div>
             <span className="text-sm font-medium w-14 text-right">
